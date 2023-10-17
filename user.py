@@ -1,4 +1,5 @@
 import hashlib
+import bcrypt
 
 MAX_BORROWED_BOOKS = 3
 
@@ -31,9 +32,8 @@ class User:
             print(f"{self.name} did not borrow '{book.title}'.")
 
     def set_password(self, password):
-        salted_pw = password + "somesalt"
-        self.password_hash = hashlib.sha256(salted_pw.encode()).hexdigest()
+        salt = bcrypt.gensalt()
+        self.password_hash = bcrypt.hashpw(password.encode('utf-8'), salt)
 
     def check_password(self, password):
-        salted_pw = password + "somesalt"
-        return self.password_hash == hashlib.sha256(salted_pw.encode()).hexdigest()
+        return bcrypt.checkpw(password.encode('utf-8'), self.password_hash)

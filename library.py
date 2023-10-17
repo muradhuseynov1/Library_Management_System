@@ -48,7 +48,7 @@ class Library:
             with open("library_data.json", "r") as file:
                 data = json.load(file)
                 self.books = [Book(b["title"], b["author"], b["ISBN"]) for b in data["books"]]
-                self.users = [User(u["name"], u["user_id"]) for u in data["users"]]
+                self.users = [User(u["name"], u["role"]) for u in data["users"]]
                 for b_data, book in zip(data["books"], self.books):
                     if b_data["status"] == "borrowed":
                         book.borrow()

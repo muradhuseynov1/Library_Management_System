@@ -10,6 +10,7 @@ class LibraryApp:
         self.library = Library()
         self.root = root
         self.root.title("Library Management System")
+        self.admin_functions = []
 
         self.build_gui()
 
@@ -70,8 +71,23 @@ class LibraryApp:
         button_frame = tk.Frame(self.root)
         button_frame.grid(row=3, column=1, padx=20, pady=20)
 
+        self.add_book_button = tk.Button(button_frame, text="Add Book", command=self.add_book)
+        self.add_book_button.grid(row=0, column=0, padx=10, pady=10)
+
+        self.remove_book_button = tk.Button(button_frame, text="Remove Book", command=self.remove_book)
+        self.remove_book_button.grid(row=4, column=0, padx=10, pady=10)
+
+        self.remove_user_button = tk.Button(button_frame, text="Remove User", command=self.remove_user)
+        self.remove_user_button.grid(row=4, column=1, padx=10, pady=10)
+
+        self.save_data_button = tk.Button(button_frame, text="Save Data", command=self.save_data)
+        self.save_data_button.grid(row=3, column=0, padx=10, pady=10)
+
+        self.load_data_button = tk.Button(button_frame, text="Load Data", command=self.load_data)
+        self.load_data_button.grid(row=3, column=1, padx=10, pady=10)
+
         # Add Book Button
-        tk.Button(button_frame, text="Add Book", command=self.add_book).grid(row=0, column=0, padx=10, pady=10)
+        #tk.Button(button_frame, text="Add Book", command=self.add_book).grid(row=0, column=0, padx=10, pady=10)
 
         # Borrow Book Button
         tk.Button(button_frame, text="Borrow Book", command=self.borrow_book).grid(row=1, column=0, padx=10, pady=10)
@@ -85,25 +101,27 @@ class LibraryApp:
         # Search by Author Button
         tk.Button(button_frame, text="Search by Author", command=self.search_by_author).grid(row=2, column=1, padx=10, pady=10)
 
-        tk.Button(button_frame, text="Remove Book", command=self.remove_book).grid(row=4, column=0, padx=10, pady=10)
+        #tk.Button(button_frame, text="Remove Book", command=self.remove_book).grid(row=4, column=0, padx=10, pady=10)
 
-        tk.Button(button_frame, text="Remove User", command=self.remove_user).grid(row=4, column=1, padx=10, pady=10)
+        #tk.Button(button_frame, text="Remove User", command=self.remove_user).grid(row=4, column=1, padx=10, pady=10)
 
         # Save Data Button
-        tk.Button(button_frame, text="Save Data", command=self.save_data).grid(row=3, column=0, padx=10, pady=10)
+        #tk.Button(button_frame, text="Save Data", command=self.save_data).grid(row=3, column=0, padx=10, pady=10)
 
         # Load Data Button
-        tk.Button(button_frame, text="Load Data", command=self.load_data).grid(row=3, column=1, padx=10, pady=10)
+        #tk.Button(button_frame, text="Load Data", command=self.load_data).grid(row=3, column=1, padx=10, pady=10)
 
         # Exit Button
         tk.Button(button_frame, text="Exit", command=self.root.quit).grid(row=5, column=0, columnspan=2, padx=10, pady=10)
-
 
         # Status Bar
         self.status_var = tk.StringVar()
         self.status_var.set("Welcome to the Library Management System!")
         self.status_label = tk.Label(self.root, textvariable=self.status_var, bd=1, relief=tk.SUNKEN, anchor=tk.W)
         self.status_label.grid(row=4, column=0, columnspan=2, sticky="we")
+
+        self.toggle_admin_functions(show=False)
+
 
     def display_book_details(self, evt):
         selected_index = self.books_listbox.curselection()
@@ -143,26 +161,6 @@ class LibraryApp:
             self.library.add_book(book)
             self.update_books_listbox()
             self.status_var.set(f"Book '{title}' added successfully!")
-
-    def register_user(self):
-        # Get values from the registration form
-        username = self.register_username_var.get()
-        password = self.register_password_var.get()
-        role = self.register_role_var.get()
-
-        # Check if user already exists
-        if any(user.name == username for user in self.library.users):
-            messagebox.showinfo("Info", "User already exists!")
-            return
-
-        # Create a new user and add it to the library
-        new_user = User(username, role)
-        new_user.set_password(password)
-        self.library.add_user(new_user)
-
-        # Provide feedback and close the registration window
-        messagebox.showinfo("Info", "Registration successful!")
-        self.register_window.destroy()
 
     def borrow_book(self):
         user_name = simpledialog.askstring("Input", "Enter user name:")
@@ -260,11 +258,9 @@ class LibraryApp:
         if user.check_password(password):
             self.current_user = user
             if user.role == "admin":
-                # show admin buttons (e.g., add/remove book)
-                pass
+                self.toggle_admin_functions(show=True)
             else:
-                # hide admin buttons
-                pass
+                self.toggle_admin_functions(show=False)
         else:
             messagebox.showinfo("Info", "Incorrect password.")
 
@@ -305,7 +301,22 @@ class LibraryApp:
 
         # Persist the new user to JSON
         self.library.save_data()  # <-- This is the corrected line
+        self.update_users_dropdown()
 
-    # Provide feedback and close the registration window
+        # Provide feedback and close the registration window
         messagebox.showinfo("Info", "Registration successful!")
         self.register_window.destroy()
+
+    def toggle_admin_functions(self, show=True):
+        if show:
+            self.add_book_button.config(state=tk.NORMAL)
+            self.remove_book_button.config(state=tk.NORMAL)
+            self.remove_user_button.config(state=tk.NORMAL)
+            self.save_data_button.config(state=tk.NORMAL)
+            self.load_data_button.config(state=tk.NORMAL)
+        else:
+            self.add_book_button.config(state=tk.DISABLED)
+            self.remove_book_button.config(state=tk.DISABLED)
+            self.remove_user_button.config(state=tk.DISABLED)
+            self.save_data_button.config(state=tk.DISABLED)
+            self.load_data_button.config(state=tk.DISABLED)
