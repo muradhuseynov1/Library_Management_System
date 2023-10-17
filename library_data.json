@@ -1,1 +1,1 @@
-{"books": [], "users": [{"name": "admin", "role": "admin", "borrowed_books": []}, {"name": "user", "role": "regular", "borrowed_books": []}]}
+{"books": [{"title": "book1", "author": "author1", "ISBN": "12321123", "status": "available", "due_date": null}], "users": [{"name": "admin", "role": "admin", "borrowed_books": []}, {"name": "user", "role": "regular", "borrowed_books": []}]}
