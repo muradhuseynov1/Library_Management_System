@@ -1,0 +1,20 @@
+{
+    "books": [
+        {
+            "title": "book1",
+            "author": "author1",
+            "ISBN": "111111",
+            "status": "borrowed",
+            "due_date": "2023-10-24"
+        }
+    ],
+    "users": [
+        {
+            "name": "diona",
+            "role": "regular",
+            "borrowed_books": [
+                "book1"
+            ]
+        }
+    ]
+}
